@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Juego en línea tipo Bomb Party sobre la historia política de Colombia, Chile y Argentina. Pasa la bomba respondiendo preguntas.">
+<title>Bomba Histórica · Juego de historia política de Colombia</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>💣</text></svg>">
+<style>
+:root{color-scheme:dark;--bg:#0e1330;--bg2:#171e48;--fg:#f2f0e6;--mut:#a9b0d6;--y:#ffd23f;--r:#ff4d5e;--b:#4d7cff;--ok:#3ddc97;--bd:#2c3566}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:0 18px}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;line-height:1.1;margin:0}
+.hero{padding:44px 0 28px;text-align:center;background:linear-gradient(var(--bg2),var(--bg))}
+h1{font-size:clamp(38px,9vw,66px);letter-spacing:-.02em}
+.lead{color:var(--mut);max-width:34em;margin:14px auto 22px}
+.fz{width:min(300px,70%);height:6px;margin:0 auto;border-radius:6px;background:var(--bd);overflow:hidden}
+.fz i{display:block;height:100%;width:100%;background:var(--y);animation:burn 9s linear infinite}
+@keyframes burn{to{width:4%}}
+.bomb{font-size:92px;line-height:1;animation:pu 1s infinite}
+.hot{animation-duration:.25s}
+@keyframes pu{50%{transform:scale(1.1)}}
+.btn{background:var(--y);color:#1a1530;border:0;font:700 17px inherit;font-family:inherit;border-radius:10px;padding:12px 18px;cursor:pointer}
+.btn.g{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:11px 12px;width:100%}
+section{padding:26px 0}
+h2{font-size:30px;margin-bottom:12px}
+.game{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:18px;min-height:240px}
+.row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}.row>*{flex:1;min-width:120px}
+.code{font:800 40px Georgia,serif;letter-spacing:.25em;text-align:center;color:var(--y)}
+.pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.chip{padding:5px 12px;border:2px solid var(--bd);border-radius:999px;font-size:14px}
+.chip.cur{border-color:var(--y);background:#ffd23f1f}.chip.dead{opacity:.35;text-decoration:line-through}
+.bar{height:10px;background:var(--bd);border-radius:9px;overflow:hidden}#fz{height:100%;width:100%;background:var(--y)}
+.q{font:700 22px/1.3 Georgia,serif;text-align:center;margin:8px 0}
+.tag{text-align:center;color:var(--mut);font-size:14px}
+.hint{text-align:center;color:var(--y);letter-spacing:.2em}
+.mut{color:var(--mut);text-align:center;font-size:15px}
+.err{color:var(--r);text-align:center}
+.shake{animation:sh .35s;border-color:var(--r)}@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.tp{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px;font-size:14px}.tp label{display:flex;gap:8px;align-items:center}.tp input{width:auto}
+#bm{position:fixed;inset:0;background:var(--r);opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:120px;transition:opacity .6s}#bm.on{opacity:.9;transition:none}
+ol.s{padding-left:20px}ol.s li{margin:8px 0}
+.topics{columns:2 260px;font-size:15px;color:var(--mut);padding-left:20px}
+footer{padding:26px 0 40px;color:var(--mut);font-size:14px;border-top:1px solid var(--bd)}
+@media(prefers-reduced-motion:reduce){.bomb,.fz i{animation:none}}
+</style></head><body>
+<header class="hero"><div class="w">
+<div class="bomb" aria-hidden="true">💣</div>
+<div class="fz" aria-hidden="true"><i></i></div>
+<h1>Bomba Histórica</h1>
+<p class="lead">Pasa la bomba antes de que explote: responde una pregunta de historia política de Colombia, Chile o Argentina. Juega en línea con tus amigos o tu curso, sin registrarte.</p>
+<a class="btn" href="#jugar">Jugar ahora</a>
+</div></header>
+
+<main class="w">
+<section id="jugar"><h2>Sala de juego</h2>
+<div class="game" id="app" aria-live="polite"></div></section>
+
+<section><h2>Cómo se juega</h2>
+<ol class="s">
+<li>Una persona crea la sala y comparte el código de 4 letras.</li>
+<li>Los demás escriben su nombre y entran con ese código desde su celular o computador.</li>
+<li>La bomba pasa de jugador en jugador. Quien la tiene lee la pregunta, escribe la palabra, nombre o fecha y pulsa Enter.</li>
+<li>Si aciertas, la bomba pasa al siguiente. Si fallas, sigues con ella. Si estalla, pierdes una vida.</li>
+<li>Gana quien quede con vidas.</li>
+</ol></section>
+
+<section><h2>Temas</h2>
+<ul class="topics" id="tl"></ul></section>
+</main>
+<footer><div class="w">Juego educativo. Las preguntas son de repaso: contrasta siempre con tus fuentes de clase.</div></footer>
+<div id="bm" aria-hidden="true">💥</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const T=["Constitución de 1886 y Regeneración","Frente Nacional (1958-1974)","Séptima Papeleta (1990)","Elección popular de alcaldes (1988)","Masacre de estudiantes (8 y 9 de junio de 1954)","Marcha del Silencio (1948)","Paro Nacional 2019 y 2021","Bogotazo y La Violencia (1948)","Desmovilización del M-19 (1990)","Exterminio de la Unión Patriótica","Toma del Palacio de Justicia","Fin de la hegemonía conservadora (1930)","Elecciones presidenciales de 1970","Consulta popular de Piedras, Tolima (2013)","Masacre de las bananeras (1928)","Guerra de los Mil Días (1899-1902)","Separación de Panamá (1903)","Chile: Allende, Pinochet y plebiscito de 1988","Dictadura en Argentina","Constitución de 1991"];
+const RAW=`0|¿Qué presidente, junto a Miguel Antonio Caro, impulsó la Constitución de 1886? (apellido)|nunez/rafael nunez
+0|La Constitución de 1886 reemplazó el federalismo por el ___ (forma de Estado)|centralismo/centralista/unitario
+0|Núñez llamó a su proyecto político la ___|regeneracion/la regeneracion
+1|¿En qué año inició el Frente Nacional?|1958
+1|Durante el Frente Nacional se alternaron liberales y ___|conservadores/conservador
+1|¿En qué año terminó el Frente Nacional?|1974
+2|La Séptima Papeleta fue un movimiento ___|estudiantil/estudiantes
+2|La Séptima Papeleta pedía convocar una Asamblea Nacional ___|constituyente
+2|¿En qué año fue la Séptima Papeleta?|1990
+3|¿En qué año se eligieron alcaldes por voto popular por primera vez?|1988
+3|¿Qué presidente (Belisario ___) impulsó la reforma que lo permitió?|betancur
+3|Antes de 1988, ¿quién nombraba a los alcaldes? (el ___)|gobernador
+4|¿Qué presidente de facto gobernaba en la masacre de estudiantes de 1954? (apellido)|rojas/rojas pinilla/gustavo rojas pinilla
+4|El 8 y 9 de junio se conmemora el Día del ___ Caído|estudiante
+4|¿En qué ciudad ocurrió la masacre estudiantil de 1954?|bogota
+5|¿Quién convocó la Marcha del Silencio de 1948? (apellido)|gaitan/jorge eliecer gaitan
+5|Gaitán pronunció la «Oración por la ___»|paz
+5|¿En qué mes de 1948 fue la Marcha del Silencio?|febrero
+6|¿En qué año fue el paro nacional del 21N?|2019
+6|¿Qué reforma de Duque encendió el Paro Nacional de 2021?|tributaria
+6|¿Apellido del presidente durante los paros de 2019 y 2021?|duque/ivan duque
+7|¿Qué líder liberal fue asesinado el 9 de abril de 1948? (apellido)|gaitan/jorge eliecer gaitan
+7|Su asesinato desató el ___ (estallido en Bogotá)|bogotazo
+7|Periodo de violencia bipartidista que siguió al Bogotazo|la violencia/violencia
+8|¿Qué comandante del M-19, candidato presidencial, fue asesinado en 1990? (apellido)|pizarro/carlos pizarro
+8|¿En qué año se desmovilizó el M-19?|1990
+8|¿Qué presidente (Virgilio ___) firmó la paz con el M-19?|barco
+9|¿Cómo se llama el partido exterminado en los 80 y 90? (dos palabras)|union patriotica
+9|¿En qué año se fundó la Unión Patriótica?|1985
+9|¿Presidente de la UP asesinado en 1987? (apellido)|pardo/pardo leal/jaime pardo leal
+10|¿En qué año fue la toma del Palacio de Justicia?|1985
+10|¿Qué guerrilla se tomó el Palacio de Justicia? (siglas)|m19/m 19
+10|El Palacio de Justicia queda en la Plaza de ___|bolivar
+11|¿En qué año terminó la hegemonía conservadora?|1930
+11|¿Presidente liberal que inició la República Liberal? (apellido)|olaya/olaya herrera/enrique olaya herrera
+11|La hegemonía conservadora duró ___ años (número)|44/cuarenta y cuatro
+12|¿Quién ganó las presidenciales de 1970? (apellido)|pastrana/misael pastrana
+12|¿Candidato de la ANAPO que denunció fraude en 1970? (apellido)|rojas/rojas pinilla/gustavo rojas pinilla
+12|El fraude de 1970 dio origen a la guerrilla ___ (siglas)|m19/m 19
+13|¿En qué municipio del Tolima fue la consulta popular minera?|piedras
+13|¿En qué año fue la consulta de Piedras?|2013
+13|La consulta de Piedras fue contra la ___ de oro|mineria/minera
+14|Empresa de las bananeras: United ___ Company|fruit
+14|¿En qué año fue la masacre de las bananeras?|1928
+14|¿En qué municipio del Magdalena ocurrió? (empieza por C)|cienaga
+15|¿En qué año inició la Guerra de los Mil Días?|1899
+15|¿En qué año terminó?|1902
+15|Un tratado que la cerró fue el del ___ (nombre de un buque)|wisconsin
+16|¿En qué año se separó Panamá?|1903
+16|¿Presidente de EE. UU. que apoyó la separación? (apellido)|roosevelt/theodore roosevelt
+16|¿Qué obra construyó EE. UU. en Panamá tras la separación?|canal/canal de panama
+17|¿Presidente socialista de Chile derrocado en 1973? (apellido)|allende/salvador allende
+17|¿Dictador chileno desde 1973? (apellido)|pinochet/augusto pinochet
+17|En el plebiscito de 1988 en Chile ganó el ___ (Sí o No)|no
+18|¿En qué año fue el golpe militar en Argentina?|1976
+18|¿Primer presidente de la junta militar de 1976? (apellido)|videla/jorge videla
+18|Madres de Plaza de ___|mayo
+19|¿En qué año se expidió la Constitución vigente de Colombia?|1991
+19|Mecanismo de protección de derechos: acción de ___|tutela
+19|Colombia es un Estado social de ___|derecho
+0|El Concordato de 1887 se firmó con la Santa ___|sede
+1|¿En qué año fue el plebiscito que aprobó el Frente Nacional (primera votación de las mujeres)?|1957
+2|La Séptima Papeleta llevó a la Constitución de ___|1991
+3|¿En qué año se aprobó el acto legislativo que permitió elegir alcaldes?|1986
+4|¿En qué mes de 1954 ocurrió la masacre de estudiantes?|junio
+5|¿De qué color eran las banderas de la multitud en la Marcha del Silencio?|negro/negras/negra/negros
+6|¿En qué mes de 2021 comenzó el Paro Nacional?|abril
+7|¿En qué ciudad ocurrió el Bogotazo?|bogota
+8|¿Qué líder del M-19 fue luego senador? (Antonio Navarro ___)|wolff/navarro wolff
+9|¿Candidato presidencial de la UP asesinado en 1990? (Bernardo ___ Ossa)|jaramillo/bernardo jaramillo/bernardo jaramillo ossa
+10|¿Qué presidente gobernaba durante la toma del Palacio de Justicia? (apellido)|betancur/belisario betancur
+11|¿Qué partido llegó al poder en 1930 tras la hegemonía conservadora?|liberal/partido liberal
+12|¿Qué día de abril fueron las elecciones de 1970?|19
+13|¿Qué empresa minera estaba detrás de La Colosa? (AngloGold ___)|ashanti
+14|¿Qué fruta se cultivaba en la zona bananera?|banano/banana/bananos/bananas
+15|¿Presidente conservador al comenzar la Guerra de los Mil Días? (apellido)|sanclemente/manuel antonio sanclemente
+16|¿En qué mes de 1903 se declaró la separación de Panamá?|noviembre
+17|¿En qué año fue el golpe de Estado en Chile?|1973
+18|¿Presidente que restauró la democracia argentina en 1983? (apellido)|alfonsin/raul alfonsin
+19|La Constitución de 1991 reemplazó a la de ___|1886`;
+const $=s=>document.querySelector(s);
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const QS=RAW.split("\n").map(l=>{const[a,b,c]=l.split("|");return{t:+a,x:b,a:c.split("/").map(norm),d:c.split("/")[0]}});
+$("#tl").innerHTML=T.map(t=>`<li>${t}</li>`).join("");
+
+let peer,conns={},names={},hostConn=null,isHost=false,myid="",me="",S={phase:"home"},recv=0,lastEv=0,errMsg="";
+let H={n:0,ans:[],used:new Set(),end:0};
+
+/* ---------- Red (PeerJS) ---------- */
+function bc(){if(S.phase==="play")S.left=Math.max(0,H.end-Date.now());recv=Date.now();Object.values(conns).forEach(c=>c.open&&c.send(S));paint()}
+function players(){return[{id:"host",name:me},...Object.keys(conns).map(id=>({id,name:names[id]}))]}
+function syncLobby(){if(S.phase!=="lobby")return;S.pl=players();bc()}
+function mk(){
+  me=($("#nm").value.trim()||"Anfitrión").slice(0,16);
+  const code=Math.random().toString(36).slice(2,6).toUpperCase();
+  peer=new Peer("bhc-"+code.toLowerCase());
+  peer.on("error",e=>{if(e.type==="unavailable-id")mk();else fail("No se pudo crear la sala. Revisa tu conexión.")});
+  peer.on("open",()=>{
+    isHost=true;myid="host";S={phase:"lobby",code,cfg:{lives:3,hint:false,tp:T.map((_,i)=>i)},pl:[]};errMsg="";
+    syncLobby();setInterval(hostTick,200);setInterval(()=>{S.phase==="lobby"?syncLobby():bc()},1000);
+  });
+  peer.on("connection",c=>{
+    c.on("open",()=>{conns[c.peer]=c;c.send(S)});
+    c.on("data",d=>{
+      if(d.hello){names[c.peer]=String(d.hello).slice(0,16);peersChanged()}
+      else if(d.a!==undefined)answer(c.peer,d.a);
+    });
+    c.on("close",()=>{delete conns[c.peer];delete names[c.peer];peersChanged()});
+  });
+}
+function jn(){
+  const code=$("#cd").value.trim().toLowerCase();if(code.length<4)return fail("El código tiene 4 caracteres.");
+  me=($("#nm").value.trim()||"Jugador").slice(0,16);
+  $("#app").innerHTML="<p class='mut'>Conectando…</p>";
+  peer=new Peer();
+  const to=setTimeout(()=>fail("No se encontró la sala "+code.toUpperCase()+"."),9000);
+  peer.on("error",()=>{clearTimeout(to);fail("No se encontró la sala "+code.toUpperCase()+".")});
+  peer.on("open",id=>{
+    myid=id;hostConn=peer.connect("bhc-"+code,{reliable:true});
+    hostConn.on("open",()=>{clearTimeout(to);hostConn.send({hello:me});S={phase:"wait",code:code.toUpperCase()};errMsg="";paint()});
+    hostConn.on("data",d=>{S=d;recv=Date.now();paint()});
+    hostConn.on("close",()=>fail("El anfitrión salió de la sala."));
+  });
+}
+function fail(m){errMsg=m;S={phase:"home"};isHost=false;try{peer&&peer.destroy()}catch(e){}conns={};paint()}
+
+/* ---------- Lógica del anfitrión ---------- */
+const alive=()=>S.order.filter(p=>p.lives>0);
+function over(){if(alive().length<=(S.order.length>1?1:0)){S.phase="over";const w=alive()[0];S.win=w?w.name:"";return false}return true}
+function nextAlive(){const i=S.order.findIndex(p=>p.id===S.cur);for(let k=1;k<=S.order.length;k++){const p=S.order[(i+k)%S.order.length];if(p.lives>0)return p.id}return S.cur}
+function newQ(){
+  let pool=QS.filter(q=>S.cfg.tp.includes(q.t)&&!H.used.has(q));
+  if(!pool.length){H.used.clear();pool=QS.filter(q=>S.cfg.tp.includes(q.t))}
+  const q=pool[Math.floor(Math.random()*pool.length)];H.used.add(q);H.ans=q.a;
+  S.q={t:q.t,x:q.x,h:S.cfg.hint?q.d[0].toUpperCase()+"·".repeat(Math.min(q.d.length-1,12)):""};
+}
+function fuse(){const m=9000+Math.random()*13000;H.end=Date.now()+m;S.max=m}
+function ev(k,id){S.ev={n:++H.n,k,id}}
+function startGame(){
+  if(!S.pl.length||!S.cfg.tp.length)return;
+  S.order=S.pl.map(p=>({id:p.id,name:p.name,lives:S.cfg.lives,pts:0}));S.cur=S.order[0].id;S.phase="play";S.ev={n:0};
+  fuse();newQ();bc();
+}
+function answer(id,w){
+  if(S.phase!=="play"||id!==S.cur)return;
+  if(H.ans.includes(norm(w))){S.order.find(p=>p.id===id).pts++;ev("ok",id);S.cur=nextAlive();newQ()}else ev("bad",id);
+  bc();
+}
+function hostTick(){
+  if(S.phase!=="play"||Date.now()<H.end)return;
+  const p=S.order.find(x=>x.id===S.cur);p.lives--;ev("boom",p.id);
+  if(over()){S.cur=nextAlive();fuse();newQ()}
+  bc();
+}
+function peersChanged(){
+  if(S.phase==="lobby")return syncLobby();
+  if(S.phase!=="play")return;
+  S.order.forEach(p=>{if(p.id!=="host"&&!conns[p.id])p.lives=0});
+  if(over()&&!alive().find(p=>p.id===S.cur)){S.cur=nextAlive();newQ()}
+  bc();
+}
+
+/* ---------- Interfaz ---------- */
+function send(){
+  const i=$("#w");if(!i||!i.value.trim())return;
+  isHost?answer("host",i.value):hostConn&&hostConn.send({a:i.value.slice(0,60)});i.value="";
+}
+const chips=()=>"<div class='pl'>"+S.order.map(p=>`<span class='chip ${p.id===S.cur&&S.phase==="play"?"cur":""} ${p.lives<1?"dead":""}'>${p.id===S.cur&&S.phase==="play"?"💣 ":""}${esc(p.name)} ${"❤️".repeat(Math.max(0,p.lives))} ✔${p.pts}</span>`).join("")+"</div>";
+function lobbyView(){
+  const c=S.cfg;
+  let h=`<p class='mut'>Código de sala: pásalo a tus compañeros</p><div class='code'>${esc(S.code)}</div><div class='pl'>${(S.pl||[]).map(p=>`<span class='chip'>${esc(p.name)}</span>`).join("")}</div>`;
+  if(isHost)h+=`<div class='row'><label>Vidas<select onchange='cfg("lives",+this.value)'>${[1,2,3,4,5].map(n=>`<option ${n===c.lives?"selected":""}>${n}</option>`).join("")}</select></label><label style='display:flex;gap:8px;align-items:end'><input type='checkbox' style='width:auto' ${c.hint?"checked":""} onchange='cfg("hint",this.checked)'>Mostrar pista (inicial y letras)</label></div>
+  <p class='mut' style='text-align:left'>Temas: <a href='#' onclick='allT(1);return false' style='color:var(--y)'>todos</a> / <a href='#' onclick='allT(0);return false' style='color:var(--y)'>ninguno</a></p>
+  <div class='tp'>${T.map((t,i)=>`<label><input type='checkbox' ${c.tp.includes(i)?"checked":""} onchange='tg(${i})'>${t}</label>`).join("")}</div>
+  <div class='row'><button class='btn' onclick='startGame()'>Iniciar partida</button></div>`;
+  else h+="<p class='mut'>Esperando a que el anfitrión inicie…</p>";
+  return h;
+}
+function playView(){
+  const mine=S.cur===myid,cp=S.order.find(p=>p.id===S.cur)||{name:"?"};
+  return `${chips()}<div class='bomb' id='bomb' style='text-align:center'>💣</div><div class='bar'><div id='fz'></div></div>
+  <div class='tag'>${esc(T[S.q.t])}</div><div class='q'>${esc(S.q.x)}</div>${S.q.h?`<div class='hint'>${esc(S.q.h)}</div>`:""}
+  ${mine?`<div class='row'><input id='w' autocomplete='off' autocapitalize='off' placeholder='Tu respuesta' aria-label='Tu respuesta'><button class='btn' onclick='send()'>Pasar la bomba</button></div>`:`<p class='mut'>Turno de <b>${esc(cp.name)}</b>. Espera tu turno.</p>`}`;
+}
+function paint(){
+  const inp=$("#w"),val=inp?inp.value:"",foc=inp&&document.activeElement===inp,a=$("#app");let h="";
+  if(S.phase==="home")h=`${errMsg?`<p class='err'>${esc(errMsg)}</p>`:""}<label>Tu nombre<input id='nm' maxlength='16' value='${esc(me)}' autocomplete='nickname'></label>
+  <div class='row'><button class='btn' onclick='mk()'>Crear sala</button></div>
+  <div class='row'><input id='cd' maxlength='4' placeholder='Código de sala' aria-label='Código de sala' style='text-transform:uppercase'><button class='btn g' onclick='jn()'>Unirse</button></div>`;
+  else if(S.phase==="wait")h=`<div class='code'>${esc(S.code)}</div><p class='mut'>Conectado. Esperando al anfitrión…</p>`;
+  else if(S.phase==="lobby")h=lobbyView();
+  else if(S.phase==="play")h=playView();
+  else h=`<div class='q'>${S.win?"🏆 Ganó "+esc(S.win):"Fin de la práctica"}</div>${chips()}${isHost?"<div class='row'><button class='btn' onclick='again()'>Volver a la sala</button></div>":"<p class='mut'>Esperando al anfitrión…</p>"}`;
+  if(a.dataset.h!==h||S.phase==="play"){a.innerHTML=h;a.dataset.h=h}
+  const n=$("#w");if(n){n.value=val;if(foc||!inp)n.focus();n.onkeydown=e=>{if(e.key==="Enter")send()}}
+  if(S.ev&&S.ev.n!==lastEv){lastEv=S.ev.n;
+    if(S.ev.k==="boom"){const b=$("#bm");b.classList.add("on");navigator.vibrate&&navigator.vibrate(300);setTimeout(()=>b.classList.remove("on"),700)}
+    if(S.ev.k==="bad"&&S.ev.id===myid&&n){n.classList.add("shake");setTimeout(()=>n.classList.remove("shake"),400)}}
+}
+function cfg(k,v){S.cfg[k]=v;bc()}
+function tg(i){const t=S.cfg.tp,j=t.indexOf(i);j<0?t.push(i):t.splice(j,1);bc()}
+function allT(on){S.cfg.tp=on?T.map((_,i)=>i):[];bc()}
+function again(){S={phase:"lobby",code:S.code,cfg:S.cfg,pl:[]};H.used.clear();syncLobby()}
+setInterval(()=>{
+  if(S.phase!=="play")return;
+  const l=Math.max(0,S.left-(Date.now()-recv)),f=$("#fz"),b=$("#bomb");
+  if(f)f.style.width=(100*l/S.max)+"%";
+  if(b)b.classList.toggle("hot",l<4000);
+},100);
+paint();
+</script></body></html>
